@@ -2,7 +2,11 @@ import os
 import sys
 import json
 
-CAMINHO_ARQUIVO = 'arquivo.json'
+CAMINHO_ARQUIVO_ESTUDANTE = 'arquivo_estudante.json'
+CAMINHO_ARQUIVO_DISCIPLINA = 'arquivo_disciplina.json'
+CAMINHO_ARQUIVO_PROFESSOR = 'arquivo_professor.json'
+CAMINHO_ARQUIVO_TURMA = 'arquivo_turma.json'
+CAMINHO_ARQUIVO_MATRICULA = 'arquivo_matricula.json'
 
 # Função para limpar o terminal (Windows, MacOS e Linux)
 def limpar_terminal():
@@ -58,16 +62,64 @@ def MenuSecundario(menu):
             print(f'{digito}. {funcao}'.ljust(14) + '|')
             print(14*'-')
 
-# --- Funções Json ---
-def carregar_dados():
+# --- Funções JSON - Estudantes
+def carregar_dados_estudantes():
     try:
-        with open(CAMINHO_ARQUIVO, 'r') as a:
+        with open(CAMINHO_ARQUIVO_ESTUDANTE, 'r') as a:
             return json.load(a)
     except (FileNotFoundError, json.JSONDecodeError):
         return []
 
 def salvar_estudantes(estudantes):
-    with open(CAMINHO_ARQUIVO, 'w', encoding='utf8') as a:
+    with open(CAMINHO_ARQUIVO_ESTUDANTE, 'w', encoding='utf8') as a:
+        json.dump(estudantes, a, indent=2)
+
+# --- Funções JSON - Disciplinas
+def carregar_dados_disciplinas():
+    try:
+        with open(CAMINHO_ARQUIVO_DISCIPLINA, 'r') as a:
+            return json.load(a)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def salvar_disciplinas(estudantes):
+    with open(CAMINHO_ARQUIVO_DISCIPLINA, 'w', encoding='utf8') as a:
+        json.dump(estudantes, a, indent=2)
+
+# --- Funções JSON - Professores
+def carregar_dados_professores():
+    try:
+        with open(CAMINHO_ARQUIVO_PROFESSOR, 'r') as a:
+            return json.load(a)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def salvar_professores(estudantes):
+    with open(CAMINHO_ARQUIVO_PROFESSOR, 'w', encoding='utf8') as a:
+        json.dump(estudantes, a, indent=2)
+
+# --- Funções JSON - Turma
+def carregar_dados_turma():
+    try:
+        with open(CAMINHO_ARQUIVO_TURMA, 'r') as a:
+            return json.load(a)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def salvar_turma(estudantes):
+    with open(CAMINHO_ARQUIVO_TURMA, 'w', encoding='utf8') as a:
+        json.dump(estudantes, a, indent=2)
+
+# --- Funções JSON - Matrícula
+def carregar_dados_matricula():
+    try:
+        with open(CAMINHO_ARQUIVO_MATRICULA, 'r') as a:
+            return json.load(a)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def salvar_matricula(estudantes):
+    with open(CAMINHO_ARQUIVO_MATRICULA, 'w', encoding='utf8') as a:
         json.dump(estudantes, a, indent=2)
 
 # --- Funções de Validação dos Estudantes ---
@@ -148,8 +200,8 @@ def validar_e_obter_cpf():
 # --- Funções de Cadastramento de Estudantes ---
 
 # Adiciona estudantes à lista, validando Nome, RA e CPF
-def incluir_estudante():
-    estudantes = carregar_dados()
+def incluir_estudantes():
+    estudantes = carregar_dados_estudantes()
     while True:
         limpar_terminal()
         print('--- Cadastro de Novo Estudante ---')
@@ -215,7 +267,7 @@ def incluir_estudante():
 
 # Mostra a lista de estudantes cadastrados
 def listar_estudantes():
-    estudantes = carregar_dados()
+    estudantes = carregar_dados_estudantes()
     limpar_terminal()
     print('--- Lista de Estudantes Cadastrados ---')
 
@@ -240,7 +292,7 @@ def listar_estudantes():
 
 # Mostra a lista de estudantes cadastrados dando a opção de excluir
 def excluir_estudante():
-    estudantes = carregar_dados()
+    estudantes = carregar_dados_estudantes()
     listar_estudantes()
     while estudantes:
         print(59*'-')
@@ -273,7 +325,7 @@ def excluir_estudante():
             limpar_linha(9)
 
 def atualizar_cadastro_estudante():
-    estudantes = carregar_dados()
+    estudantes = carregar_dados_estudantes()
     listar_estudantes()
     while estudantes:
         print(59*'-')
@@ -431,10 +483,10 @@ while True:
             escolha_menu_secundario = input('Insira o dígito correspondente à função desejada: ').strip()
 
             if escolha_menu_secundario == '1': # Incluir
-                incluir_estudante()
+                incluir_estudantes()
             elif escolha_menu_secundario == '2': # Listar
                 listar_estudantes()
-                if carregar_dados():
+                if carregar_dados_estudantes():
                     input('\nPressione Enter para voltar ao menu Estudante...')
             elif escolha_menu_secundario == '3': # Excluir
                 excluir_estudante()
@@ -446,9 +498,79 @@ while True:
                 print('--- Função Inválida ---\nDigite apenas o número correspondente.\nEx: "1" | Incluir')
                 input('Pressione Enter para continuar...')
 
-        # ---- Outros Menus (Em desenvolvimento) ----
-        else:
-            limpar_terminal()
-            print(f'--- Menu "{opcao_texto}" em desenvolvimento ---')
-            input('Pressione Enter para voltar ao Menu Principal...')
-            break # Sai do menu secundário e volta para o principal
+        # ---- Menu Disciplina ----
+        elif opcao_texto == 'Disciplina':
+            MenuSecundario(opcao_texto)
+            escolha_menu_secundario = input('Insira o dígito correspondente à função desejada: ').strip()
+
+            if escolha_menu_secundario == '1': # Incluir
+                ...
+            elif escolha_menu_secundario == '2': # Listar
+                ...
+            elif escolha_menu_secundario == '3': # Excluir
+                ...
+            elif escolha_menu_secundario == '4': # Atualizar
+                ...
+            elif escolha_menu_secundario == '5': # Voltar
+                break # Sai do menu secundário e volta para o principal
+            else:
+                print('--- Função Inválida ---\nDigite apenas o número correspondente.\nEx: "1" | Incluir')
+                input('Pressione Enter para continuar...')
+
+        # ---- Menu Professor ----
+        elif opcao_texto == 'Professor':
+            MenuSecundario(opcao_texto)
+            escolha_menu_secundario = input('Insira o dígito correspondente à função desejada: ').strip()
+
+            if escolha_menu_secundario == '1': # Incluir
+                ...
+            elif escolha_menu_secundario == '2': # Listar
+                ...
+            elif escolha_menu_secundario == '3': # Excluir
+                ...
+            elif escolha_menu_secundario == '4': # Atualizar
+                ...
+            elif escolha_menu_secundario == '5': # Voltar
+                break # Sai do menu secundário e volta para o principal
+            else:
+                print('--- Função Inválida ---\nDigite apenas o número correspondente.\nEx: "1" | Incluir')
+                input('Pressione Enter para continuar...')
+
+        # ---- Menu Turma ----
+        elif opcao_texto == 'Turma':
+            MenuSecundario(opcao_texto)
+            escolha_menu_secundario = input('Insira o dígito correspondente à função desejada: ').strip()
+
+            if escolha_menu_secundario == '1': # Incluir
+                ...
+            elif escolha_menu_secundario == '2': # Listar
+                ...
+            elif escolha_menu_secundario == '3': # Excluir
+                ...
+            elif escolha_menu_secundario == '4': # Atualizar
+                ...
+            elif escolha_menu_secundario == '5': # Voltar
+                break # Sai do menu secundário e volta para o principal
+            else:
+                print('--- Função Inválida ---\nDigite apenas o número correspondente.\nEx: "1" | Incluir')
+                input('Pressione Enter para continuar...')
+
+
+        # ---- Menu Matrícula ----
+        elif opcao_texto == 'Matrícula':
+            MenuSecundario(opcao_texto)
+            escolha_menu_secundario = input('Insira o dígito correspondente à função desejada: ').strip()
+
+            if escolha_menu_secundario == '1': # Incluir
+                ...
+            elif escolha_menu_secundario == '2': # Listar
+                ...
+            elif escolha_menu_secundario == '3': # Excluir
+                ...
+            elif escolha_menu_secundario == '4': # Atualizar
+                ...
+            elif escolha_menu_secundario == '5': # Voltar
+                break # Sai do menu secundário e volta para o principal
+            else:
+                print('--- Função Inválida ---\nDigite apenas o número correspondente.\nEx: "1" | Incluir')
+                input('Pressione Enter para continuar...')
