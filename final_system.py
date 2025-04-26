@@ -343,9 +343,9 @@ def atualizar_cadastro_estudante():
                 estudante_selecionado = estudantes[indice_estudante]
 
                 print('\n--- Estudante Selecionado ---')
-                print(f'Nome: {estudante_selecionado["nome"]}')
-                print(f'RA: {estudante_selecionado["ra"]}')
-                print(f'CPF: {estudante_selecionado["cpf"]}')
+                print(f'Nome: {estudante_selecionado['nome']}')
+                print(f'RA: {estudante_selecionado['ra']}')
+                print(f'CPF: {estudante_selecionado['cpf']}')
                 print('-----------------------------')
 
                 while True:
@@ -445,6 +445,386 @@ def atualizar_cadastro_estudante():
                 )
             input('Pressione Enter para tentar novamente...')
             return atualizar_cadastro_estudante()
+# ----------------------------------------------------------------------------------------------------------
+# --- Funções Disciplinas ---
+
+def incluir_disciplina():
+    disciplinas = carregar_dados_disciplinas()
+    limpar_terminal()
+    print(40*'-')
+    print('Cadastramento de Disciplinas'.center(40) + '|')
+    print('(Digite "Cancelar" para voltar)')
+    print(40*'-')
+    print()
+
+
+    while True:
+        nome = input('Nome da disciplina: ').capitalize().strip()
+        if nome.isnumeric() or nome == '':
+            input('--- Nome Inválido ---\n'
+                'O nome da disciplina deve conter letras\n'
+                'Pressione Enter para tentar novamente...'
+                )
+            limpar_linha(4)
+            continue
+        break
+
+    while nome != 'Cancelar':
+        abertura = input('Insira a data de abertura (dd/mm/aaaa): ').strip()
+        try:
+            dia1 = int(abertura[:2])
+            mes1 = int(abertura[3:5])
+            ano1 = int(abertura[6:10])
+            if len(abertura) == 10:
+                if 0 < dia1 <= 31:
+                    if abertura[2] == '/':
+                        if 0 < mes1 <= 12:
+                            if abertura[5] == '/':
+                                if 2025 <= ano1:
+                                    break
+                                else:
+                                    raise Exception
+                            else:
+                                raise Exception
+                        else:
+                            raise Exception
+                    else:
+                        raise Exception
+                else:
+                    raise Exception
+            else:
+                raise Exception
+        except Exception:
+            input('\n--- Data Inválida ---\n'
+                'A data deve ser inserida no seguinte formato:\n'
+                '-> 2 Dígitos para dia\n'
+                '-> 2 Dígitos para mês\n'
+                '-> 4 Dígitos para ano\n'
+                'Todos separados por uma barra "/"\n'
+                'O formato final deverá se parecer com "24/10/2025"\n'
+                'Pressione Enter para tentar novamente...'
+                )
+            limpar_linha(10)
+            continue
+
+    while nome != 'Cancelar':
+        fechamento = input('Insira a data de fechamento (dd/mm/aaaa): ').strip()
+        try:
+            dia2 = int(fechamento[:2])
+            mes2 = int(fechamento[3:5])
+            ano2 = int(fechamento[6:10])
+            if len(fechamento) == 10:
+                if 0 < dia2 <= 31:
+                    if fechamento[2] == '/':
+                        if 0 < mes2 <= 12:
+                            if fechamento[5] == '/':
+                                if 2025 <= ano2:
+                                    if (ano2, mes2, dia2) >= (ano1, mes1, dia1):
+                                        break
+                                    else:
+                                        raise Exception
+                                else:
+                                    raise Exception
+                            else:
+                                raise Exception
+                        else:
+                            raise Exception
+                    else:
+                        raise Exception
+                else:
+                    raise Exception
+            else:
+                raise Exception
+        except Exception:
+            input('\n--- Data Inválida ---\n'
+                '- Obs: A data não pode ser anterior a data de abertura -\n\n'
+                'A data deve ser inserida no seguinte formato:\n'
+                '-> 2 Dígitos para dia\n'
+                '-> 2 Dígitos para mês\n'
+                '-> 4 Dígitos para ano\n'
+                'Todos separados por uma barra "/"\n'
+                'O formato final deverá se parecer com "27/11/2025"\n'
+                'Pressione Enter para tentar novamente...'
+                )
+            limpar_linha(12)
+            continue
+
+    while nome != 'Cancelar':
+        try:
+            carga_horaria = int(input('Carga horária (Apenas números): ').strip())
+            if carga_horaria >= 0:
+                break
+            else:
+                raise Exception
+
+        except Exception:
+            input('--- Carga horária Inválida ---\n'
+                    'Insira apenas dígitos, como: 90\n'
+                    'Pressione Enter para tentar novamente...'
+                    )
+            limpar_linha(4)
+            continue
+
+    disciplinas.append({'disciplina': nome, 'abertura': abertura, 'fechamento': fechamento, 'carga_horaria': carga_horaria})
+    salvar_disciplinas(disciplinas)
+    input(f'Disciplina: ({nome}) cadastrada com sucesso!\n'
+          'Pressione Enter para continuar...'
+          )
+
+def listar_disciplinas():
+    disciplinas = carregar_dados_disciplinas()
+    limpar_terminal()
+    print('--- Lista de Disciplinas Cadastradas ---')
+
+    if not disciplinas:
+        print('\n< Nenhuma disciplina cadastrada no momento >')
+        input('\nPressione Enter para voltar ao menu Disciplina...')
+    else:
+        # Cabeçalho
+        # Define larguras mínimas
+        print('-' * 84)
+        print(f'{'#':<3} | {'Disciplina':<35} | {'Abertura':<10} | {'Fechamento':<10} | {'Carga Horária':<12} |')
+        print('-' * 84)
+
+        # Dados dos estudantes
+        for indice, disciplina in enumerate(disciplinas):
+            disciplina_nome = disciplina['disciplina']
+            disciplina_abertura = disciplina['abertura']
+            disciplina_fechamento = disciplina['fechamento']
+            disciplina_carga_horaria = str(disciplina['carga_horaria'])
+            print(f'{indice:<3} | {disciplina_nome:<35} | {disciplina_abertura:<9} | {disciplina_fechamento:<10} | {disciplina_carga_horaria:<13} |')
+
+        print('-' * 84)
+
+def excluir_disciplina():
+    disciplinas = carregar_dados_disciplinas()
+    listar_disciplinas()
+    while disciplinas:
+        print(59*'-')
+        print('Digite o índice < # > da disciplina que deseja excluir'.ljust(60) + '|')
+        print('Digite "Cancelar" no campo abaixo para cancelar a operação'.ljust(60) + '|')
+        print(59*'-')
+        indice_disciplina = input('Índice: ').strip().capitalize()
+
+        if indice_disciplina == 'Cancelar':
+            break
+
+        try: # Valida e Exclui a disciplina da lista
+            indice_disciplina = int(indice_disciplina)
+            if indice_disciplina >= 0: # Bloqueia a entrada de números < 0 para excluir disciplinas
+                disciplina_excluida = disciplinas[indice_disciplina]
+                disciplinas.pop(indice_disciplina)
+                salvar_disciplinas(disciplinas)
+                print(f'Disciplina: {disciplina_excluida['disciplina']} | Foi excluída')
+                input('Pressione Enter para continuar...')
+                return excluir_disciplina()
+            else:
+                raise ValueError
+
+        except Exception:
+            print('--- Índice inválido ---\n'
+                'O índice da disciplina é o numero da coluna | # | da mesma.\n'
+                'Ex: > 0 <  para a disciplina: | Matemática | 12/02/2025 | 15/04/2025 | 90 |'
+                )
+            input('Pressione Enter para tentar novamente...')
+            limpar_linha(9)
+
+def atualizar_cadastro_disciplina():
+    disciplinas = carregar_dados_disciplinas()
+
+    if not disciplinas:
+        print('--- Nenhuma disciplina cadastrada ---')
+        input('Pressione Enter para voltar ao menu...')
+        return
+
+    listar_disciplinas()
+    while True:
+        print(60*'-')
+        print('Digite o índice < # > da disciplina que deseja atualizar'.ljust(60) + '|')
+        print('Digite "Cancelar" no campo abaixo para cancelar a operação'.ljust(60) + '|')
+        print(60*'-')
+        indice_disciplina = input('Índice: ').strip().capitalize()
+
+        if indice_disciplina == 'Cancelar':
+            break
+
+        try:
+            indice_disciplina = int(indice_disciplina)
+            if indice_disciplina >= 0 and indice_disciplina < len(disciplinas):  # Garante que o índice existe
+                disciplina_selecionada = disciplinas[indice_disciplina]
+
+                print('\n--- Disciplina Selecionada ---')
+                print(f'Disciplina: {disciplina_selecionada["disciplina"]}')
+                print(f'Abertura: {disciplina_selecionada["abertura"]}')
+                print(f'Fechamento: {disciplina_selecionada["fechamento"]}')
+                print(f'Carga Horária: {disciplina_selecionada["carga_horaria"]}')
+                print()
+
+                while True:
+                    print(100 * '-')
+                    print('Digite o número da ação desejada no campo abaixo'.center(100) + '|')
+                    print('(1) Alterar Nome - (2) Alterar Abertura - (3) Alterar Fechamento - (4) Alterar Carga Horária'.center(100) + '|')
+                    print(100 * '-')
+                    acao_usuario_atualizar = input('Ação: ')
+
+                    if acao_usuario_atualizar == '1':  # Alterar Nome
+                        while True:
+                            novo_nome = input('Nome atualizado da disciplina: ').capitalize().strip()
+                            if novo_nome.isnumeric() or novo_nome == '':
+                                input('--- Nome Inválido ---\n'
+                                    'O nome da disciplina deve conter letras\n'
+                                    'Pressione Enter para tentar novamente...'
+                                    )
+                                limpar_linha(4)
+                            else:
+                                disciplina_selecionada['disciplina'] = novo_nome
+                                input('Nome atualizado com sucesso!!!\n'
+                                      'Pressione Enter para continuar...'
+                                      )
+                                break
+
+                    elif acao_usuario_atualizar == '2':  # Alterar Abertura
+                        while True:
+                            dia2 = int(disciplina_selecionada['fechamento'][:2])
+                            mes2 = int(disciplina_selecionada['fechamento'][3:5])
+                            ano2 = int(disciplina_selecionada['fechamento'][6:10])
+
+                            abertura = input('Insira a data atualizada de abertura (dd/mm/aaaa): ').strip()
+                            try:
+                                dia1 = int(abertura[:2])
+                                mes1 = int(abertura[3:5])
+                                ano1 = int(abertura[6:10])
+                                if len(abertura) == 10:
+                                    if 0 < dia1 <= 31:
+                                        if abertura[2] == '/':
+                                            if 0 < mes1 <= 12:
+                                                if abertura[5] == '/':
+                                                    if 2025 <= ano1:
+                                                        if (ano2, mes2, dia2) >= (ano1, mes1, dia1):
+                                                            disciplina_selecionada['abertura'] = abertura
+                                                            input('Data de abertura atualizada com sucesso!!!\n'
+                                                                  'Pressione Enter para continuar...'
+                                                                  )
+                                                            break
+                                                        else:
+                                                            raise Exception
+                                                    else:
+                                                        raise Exception
+                                                else:
+                                                    raise Exception
+                                            else:
+                                                raise Exception
+                                        else:
+                                            raise Exception
+                                    else:
+                                        raise Exception
+                                else:
+                                    raise Exception
+                            except Exception:
+                                input('\n--- Data Inválida ---\n'
+                                    '- Obs: A data não pode ser sucessora a data de fechamento -\n\n'
+                                    'A data deve ser inserida no seguinte formato:\n'
+                                    '-> 2 Dígitos para dia\n'
+                                    '-> 2 Dígitos para mês\n'
+                                    '-> 4 Dígitos para ano\n'
+                                    'Todos separados por uma barra "/"\n'
+                                    'O formato final deverá se parecer com "24/10/2025"\n'
+                                    'Pressione Enter para tentar novamente...'
+                                    )
+                                limpar_linha(12)
+                                continue
+
+                    elif acao_usuario_atualizar == '3':  # Alterar Fechamento
+                        while True:
+                            dia1 = int(disciplina_selecionada['abertura'][:2])
+                            mes1 = int(disciplina_selecionada['abertura'][3:5])
+                            ano1 = int(disciplina_selecionada['abertura'][6:10])
+
+                            fechamento = input('Insira a data atualizada de fechamento (dd/mm/aaaa): ').strip()
+                            try:
+                                dia2 = int(fechamento[:2])
+                                mes2 = int(fechamento[3:5])
+                                ano2 = int(fechamento[6:10])
+                                if len(fechamento) == 10:
+                                    if 0 < dia2 <= 31:
+                                        if fechamento[2] == '/':
+                                            if 0 < mes2 <= 12:
+                                                if fechamento[5] == '/':
+                                                    if 2025 <= ano2:
+                                                        if (ano2, mes2, dia2) >= (ano1, mes1, dia1):
+                                                            disciplina_selecionada['fechamento'] = fechamento
+                                                            input('Data de fechamento atualizada com sucesso!!!\n'
+                                                                  'Pressione Enter para continuar...'
+                                                                  )
+                                                            break
+                                                        else:
+                                                            raise Exception
+                                                    else:
+                                                        raise Exception
+                                                else:
+                                                    raise Exception
+                                            else:
+                                                raise Exception
+                                        else:
+                                            raise Exception
+                                    else:
+                                        raise Exception
+                                else:
+                                    raise Exception
+                            except Exception:
+                                input('\n--- Data Inválida ---\n'
+                                    '- Obs: A data não pode ser anterior a data de abertura -\n\n'
+                                    'A data deve ser inserida no seguinte formato:\n'
+                                    '-> 2 Dígitos para dia\n'
+                                    '-> 2 Dígitos para mês\n'
+                                    '-> 4 Dígitos para ano\n'
+                                    'Todos separados por uma barra "/"\n'
+                                    'O formato final deverá se parecer com "27/11/2025"\n'
+                                    'Pressione Enter para tentar novamente...'
+                                    )
+                                limpar_linha(12)
+                                continue
+                    elif acao_usuario_atualizar == '4':  # Alterar Carga Horária
+                        while True:
+                            try:
+                                carga_horaria = int(input('Carga horária atualizada (Apenas números): ').strip())
+                                if carga_horaria >= 0:
+                                    disciplina_selecionada['carga_horaria'] = carga_horaria
+                                    input('Carga horária atualizada com sucesso!!!\n'
+                                        'Pressione Enter para continuar...'
+                                        )
+                                    break
+                                else:
+                                    raise Exception
+
+                            except Exception:
+                                input('--- Carga Horária Inválida ---\n'
+                                        'Insira apenas dígitos, como: 90\n'
+                                        'Pressione Enter para tentar novamente...'
+                                        )
+                                limpar_linha(4)
+                                continue
+
+                    else:
+                        print('--- Ação Inválida ---\n'
+                              'Deve ser digitado apenas o número referente à ação\n'
+                              'Ex: > 1 < para atualizar o nome da disciplina')
+                        input('Pressione Enter para tentar novamente...')
+                        limpar_linha(9)
+                    
+                    break
+                salvar_disciplinas(disciplinas)
+                return atualizar_cadastro_disciplina()
+            else:
+                raise ValueError
+        except Exception:
+            print('--- Índice inválido ---\n'
+                  'O índice da disciplina é o numero da coluna | # | da mesma.\n'
+                  'Ex: > 0 <  para a disciplina: | Matemática | 12/04/2025 | 15/06/2025 | 56 |'
+                  )
+            input('Pressione Enter para tentar novamente...')
+            limpar_linha(9)
+            continue  # Volta para pedir o índice novamente
 
 # --- Loop Principal ---
 while True:
@@ -498,26 +878,28 @@ while True:
                 print('--- Função Inválida ---\nDigite apenas o número correspondente.\nEx: "1" | Incluir')
                 input('Pressione Enter para continuar...')
 
-        # ---- Menu Disciplina ----
+        # ---- Menu Estudante ----
         elif opcao_texto == 'Disciplina':
             MenuSecundario(opcao_texto)
             escolha_menu_secundario = input('Insira o dígito correspondente à função desejada: ').strip()
 
             if escolha_menu_secundario == '1': # Incluir
-                ...
+                incluir_disciplina()
             elif escolha_menu_secundario == '2': # Listar
-                ...
+                listar_disciplinas()
+                if carregar_dados_disciplinas():
+                    input('\nPressione Enter para voltar ao menu Disciplina...')
             elif escolha_menu_secundario == '3': # Excluir
-                ...
+                excluir_disciplina()
             elif escolha_menu_secundario == '4': # Atualizar
-                ...
+                atualizar_cadastro_disciplina()
             elif escolha_menu_secundario == '5': # Voltar
                 break # Sai do menu secundário e volta para o principal
             else:
                 print('--- Função Inválida ---\nDigite apenas o número correspondente.\nEx: "1" | Incluir')
                 input('Pressione Enter para continuar...')
 
-        # ---- Menu Professor ----
+        # ---- Menu Estudante ----
         elif opcao_texto == 'Professor':
             MenuSecundario(opcao_texto)
             escolha_menu_secundario = input('Insira o dígito correspondente à função desejada: ').strip()
@@ -536,7 +918,7 @@ while True:
                 print('--- Função Inválida ---\nDigite apenas o número correspondente.\nEx: "1" | Incluir')
                 input('Pressione Enter para continuar...')
 
-        # ---- Menu Turma ----
+        # ---- Menu Estudante ----
         elif opcao_texto == 'Turma':
             MenuSecundario(opcao_texto)
             escolha_menu_secundario = input('Insira o dígito correspondente à função desejada: ').strip()
@@ -555,8 +937,7 @@ while True:
                 print('--- Função Inválida ---\nDigite apenas o número correspondente.\nEx: "1" | Incluir')
                 input('Pressione Enter para continuar...')
 
-
-        # ---- Menu Matrícula ----
+        # ---- Menu Estudante ----
         elif opcao_texto == 'Matrícula':
             MenuSecundario(opcao_texto)
             escolha_menu_secundario = input('Insira o dígito correspondente à função desejada: ').strip()
