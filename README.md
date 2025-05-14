@@ -48,21 +48,6 @@ All data is saved in `.json` files (which are like organized text files) so you 
 *   **`json` module:** To read and write the data files.
 *   **`os` and `sys` modules:** For things like clearing the terminal screen.
 
-## How to use the program
-
-1.  You need to have Python 3 installed on your computer.
-2.  Download or copy the project files to a folder on your computer.
-3.  Open the terminal (or "command prompt").
-4.  Go to the folder where you saved the files. For example, if you saved it in `Documents/MyProgram`, type:
-    ```bash
-    cd Documents/MyProgram
-    ```
-5.  Run the main file (the name might be `main.py`, `app.py`, or something similar):
-    ```bash
-    python your_file_name.py
-    ```
-6.  The program will show a menu with options. Just type the number of the option you want and press Enter. The `.json` files with the data will be created in the same folder.
-
 ## Example of how data is stored
 
 Data is kept in files like `arquivo_estudante.json`. Inside them, it looks something like this:
